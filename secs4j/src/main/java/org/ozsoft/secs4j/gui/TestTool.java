@@ -50,6 +50,7 @@ import org.ozsoft.secs4j.SecsConstants;
 import org.ozsoft.secs4j.SecsEquipment;
 import org.ozsoft.secs4j.SecsEquipmentListener;
 import org.ozsoft.secs4j.SecsException;
+import org.ozsoft.secs4j.message.S1F1;
 
 /**
  * Test tool with Swing GUI to simulate a SECS equipment and interactively test communicating with other SECS equipment.
@@ -112,6 +113,8 @@ public class TestTool implements SecsEquipmentListener {
         controlStateChanged(equipment.getControlState());
 
         equipment.addListener(this);
+        
+        launchPassiveEqu();
     }
     
     @Override
@@ -140,6 +143,18 @@ public class TestTool implements SecsEquipmentListener {
     @Override
     public void messageSent(Message message) {
         appendTraceLog("S<< " + message.toString());
+    }
+    
+    private void launchPassiveEqu() {
+    	
+    	SecsEquipment passiveEqu = new SecsEquipment();
+    	passiveEqu.setConnectMode(ConnectMode.PASSIVE);
+    	try {
+    		//default port
+			passiveEqu.setEnabled(true);
+		} catch (SecsException e) {
+			JOptionPane.showMessageDialog(frame, "Could not configure or enable passive equipment: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
     }
     
     private void initUI() {
@@ -396,7 +411,7 @@ public class TestTool implements SecsEquipmentListener {
         panel.setBorder(new TitledBorder("Send Message"));
         
         sendText = new JTextArea();
-        sendText.setEnabled(false);
+        sendText.setEnabled(true);
         sendText.setFont(FONT);
         sendText.setLineWrap(false);
         JScrollPane scrollPane = new JScrollPane(sendText);
@@ -412,7 +427,25 @@ public class TestTool implements SecsEquipmentListener {
         panel.add(scrollPane, gbc);
         
         sendButton = new JButton("Send");
-        sendButton.setEnabled(false);
+        sendButton.setEnabled(true);
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	String message = sendText.getText().toUpperCase();
+            	try {
+	            	if(S1F1.class.getSimpleName().equals(message)) {
+	            		
+	            		S1F1 s1f1 = new S1F1();
+						equipment.sendMessageAndWait(s1f1);
+	            	}else {
+	            		
+	            		JOptionPane.showMessageDialog(frame, "Message not supported: " + message, "Error", JOptionPane.ERROR_MESSAGE);
+	            	}
+            	} catch (SecsException e1) {
+					JOptionPane.showMessageDialog(frame, "Send message failed: " + message, "Error", JOptionPane.ERROR_MESSAGE);
+				}
+            }
+        });
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
