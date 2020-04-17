@@ -31,6 +31,8 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.ozsoft.secs4j.message.S1F1;
+import org.ozsoft.secs4j.message.S1F11;
+import org.ozsoft.secs4j.message.S1F12;
 import org.ozsoft.secs4j.message.S1F13;
 import org.ozsoft.secs4j.message.S1F14;
 import org.ozsoft.secs4j.message.S1F15;
@@ -154,6 +156,9 @@ public class SecsEquipment {
         addMessageType(S2F25.class); // Request Loopback Diagnostic Request
                                      // (LDR)
         addMessageType(S2F26.class); // Loopback Diagnostic Acknowledge (LDA)
+        
+        addMessageType(S1F11.class); //Status Variable Namelist Request
+        addMessageType(S1F12.class);
     }
 
     public int getDeviceId() {
@@ -329,10 +334,10 @@ public class SecsEquipment {
         }
     }
 
-    public void addMessageType(Class<? extends SecsMessage> messageType) {
+	public void addMessageType(Class<? extends SecsMessage> messageType) {
         SecsMessage message = null;
         try {
-            message = messageType.newInstance();
+            message = messageType.getDeclaredConstructor().newInstance();
             int messageId = message.getStream() * 256 + message.getFunction();
             messageTypes.put(messageId, messageType);
             LOG.debug("Added message type " + message.getDescripton());
@@ -344,7 +349,7 @@ public class SecsEquipment {
     public void removeMessageType(Class<? extends SecsMessage> messageType) {
         SecsMessage message = null;
         try {
-            message = messageType.newInstance();
+            message = messageType.getDeclaredConstructor().newInstance();
             int messageId = message.getStream() * 256 + message.getFunction();
             if (messageTypes.containsKey(messageId)) {
                 messageTypes.remove(messageId);
@@ -397,6 +402,12 @@ public class SecsEquipment {
         }
     }
     
+    /**
+     * send SxFy message and wait for the reply message return
+     * @param primaryMessage
+     * @return
+     * @throws SecsException
+     */
     public SecsReplyMessage sendMessageAndWait(SecsPrimaryMessage primaryMessage) throws SecsException {
         if (communicationState != CommunicationState.COMMUNICATING) {
             throw new SecsException("Communication State not COMMUNICATING");
@@ -502,6 +513,7 @@ public class SecsEquipment {
                     sleep(100L);
                 }
                 
+                //mainly for passive case, receive incoming request
                 if (is.available() > 0) {
                     int length = is.read(buf);
                     try {
@@ -667,9 +679,10 @@ public class SecsEquipment {
                         replyMessage.setTransactionId(transactionId);
                     } else {
                         // Communication not established yet -- ABORT.
+                    	LOG.error(String.format("Communication not established yet -- ABORT for S%sF%s", stream, function));
                         SecsMessage sxf0 = new SxF0(stream);
-                        sxf0.setTransactionId(transactionId);
-                        sendMessage(sxf0, false);
+//                        sxf0.setTransactionId(transactionId);
+//                        sendMessage(sxf0, false);
                     }
                 } else if (dataMessage instanceof SecsReplyMessage) {
                     // Reply message.

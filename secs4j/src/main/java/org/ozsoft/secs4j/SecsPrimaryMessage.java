@@ -27,6 +27,11 @@ package org.ozsoft.secs4j;
  */
 public abstract class SecsPrimaryMessage extends SecsMessage {
 
+	/**
+	 * handle primary message's related secondary(reply) message
+	 * @return
+	 * @throws SecsException
+	 */
     protected abstract SecsReplyMessage handle() throws SecsException;
 
 }

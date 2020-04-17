@@ -26,7 +26,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -50,7 +52,10 @@ import org.ozsoft.secs4j.SecsConstants;
 import org.ozsoft.secs4j.SecsEquipment;
 import org.ozsoft.secs4j.SecsEquipmentListener;
 import org.ozsoft.secs4j.SecsException;
+import org.ozsoft.secs4j.format.L;
+import org.ozsoft.secs4j.format.U4;
 import org.ozsoft.secs4j.message.S1F1;
+import org.ozsoft.secs4j.message.S1F11;
 
 /**
  * Test tool with Swing GUI to simulate a SECS equipment and interactively test communicating with other SECS equipment.
@@ -437,6 +442,11 @@ public class TestTool implements SecsEquipmentListener {
 	            		
 	            		S1F1 s1f1 = new S1F1();
 						equipment.sendMessageAndWait(s1f1);
+	            	}else if (S1F11.class.getSimpleName().equals(message)) {
+						
+	            		S1F11 s1f11 = new S1F11();
+	                    equipment.sendMessageAndWait(s1f11);
+						
 	            	}else {
 	            		
 	            		JOptionPane.showMessageDialog(frame, "Message not supported: " + message, "Error", JOptionPane.ERROR_MESSAGE);
