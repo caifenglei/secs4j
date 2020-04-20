@@ -40,6 +40,8 @@ import org.ozsoft.secs4j.message.S1F16;
 import org.ozsoft.secs4j.message.S1F17;
 import org.ozsoft.secs4j.message.S1F18;
 import org.ozsoft.secs4j.message.S1F2;
+import org.ozsoft.secs4j.message.S1F3;
+import org.ozsoft.secs4j.message.S1F4;
 import org.ozsoft.secs4j.message.S2F25;
 import org.ozsoft.secs4j.message.S2F26;
 import org.ozsoft.secs4j.message.SxF0;
@@ -159,6 +161,9 @@ public class SecsEquipment {
         
         addMessageType(S1F11.class); //Status Variable Namelist Request
         addMessageType(S1F12.class);
+        
+        addMessageType(S1F3.class);
+        addMessageType(S1F4.class);
     }
 
     public int getDeviceId() {

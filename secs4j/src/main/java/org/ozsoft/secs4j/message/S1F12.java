@@ -1,8 +1,6 @@
 package org.ozsoft.secs4j.message;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.ozsoft.secs4j.SecsException;
@@ -25,13 +23,13 @@ public class S1F12 extends SecsReplyMessage
 	
 	private static final int FUNCTION = 12;
 	
-	private static final boolean WITH_REPLY = true;
+	private static final boolean WITH_REPLY = false;
 	
 	private static final String DESCRIPTION = "Status Variable Namelist Reply";
 	
-	private List<U4> svids = new ArrayList<U4>();
+	private L svids = new L();
 	
-	private Data<?> variables = new L();
+	private L variables = new L();
 	
 	private static final Map<Long, String> StatusVariableList;
 	
@@ -69,7 +67,7 @@ public class S1F12 extends SecsReplyMessage
 
 	@Override
 	/**
-	 * data from host call
+	 * parse received data
 	 * <SVID> - Status variable ID 
 	 * 
 	 * Format:
@@ -89,44 +87,48 @@ public class S1F12 extends SecsReplyMessage
         if (!(data instanceof L)) {
             throw new SecsParseException("Root data item must be of type L");
         }
-        L l = (L) data;
-        if (l.length() == 0) {
+        
+        L vl = (L) data;
+        if (vl.length() == 0) {
             // no status variable definitions
         } else {
         	
-        	int len = l.length();
-        	List<U4> svids = new ArrayList<U4>();
+        	int len = vl.length();
+        	L sl = new L();
         	for (int i = 0; i < len; i++) {
         		
-        		Data<?> dataItem = l.getItem(i);
+        		Data<?> dataItem = vl.getItem(i);
         		if(!(dataItem instanceof L)) {
         			throw new SecsParseException("Second level must be of type L");
         		}
         		
-        		Data<?> svidItem = ((L) dataItem).getItem(0);
+        		//value item
+        		L vi = (L) dataItem;
+        		Data<?> svidItem = vi.getItem(0);
         		if(!(svidItem instanceof U4)) {
         			throw new SecsParseException("SVID data must be of type U4");
         		}
-        		svids.add((U4) svidItem);
+        		sl.addItem(svidItem);
         		
-        		Data<?> svnameItem = ((L) dataItem).getItem(1);
+        		Data<?> svnameItem = vi.getItem(1);
         		if(!(svnameItem instanceof A)) {
         			throw new SecsParseException("SVNAME data must be of type A");
         		}
         		
-        		Data<?> unitsItem = ((L) dataItem).getItem(2);
+        		Data<?> unitsItem = vi.getItem(2);
         		if(!(unitsItem instanceof A)) {
         			throw new SecsParseException("UNITS data must be of type A");
         		}
 //        		String units = ((A)unitsItem).getValue();
             }
-        	this.setVariables(l);
+        	this.setVariables(vl);
+        	this.setSvids(sl);
         }
 	}
 
 	@Override
 	/**
-	 * form request data to reply
+	 * get data to send
 	 * 
 	 * Format:
 	 * {L:n
@@ -140,22 +142,21 @@ public class S1F12 extends SecsReplyMessage
 	 */
 	protected Data<?> getData() throws SecsParseException {
 
-		L l = new L();
-		
-		if(0 == svids.size()) {
+		L vl = new L();
+		if(0 == svids.length()) {
 			
 			for(Map.Entry<Long, String> item: StatusVariableList.entrySet()) {
 				L sl = new L();
 				sl.addItem(new U4(item.getKey()));
 				sl.addItem(new A(item.getValue()));
 				sl.addItem(new A("1"));
-				l.addItem(sl);
+				vl.addItem(sl);
 			}
 		}else {
-			for(U4 item: svids) {
+			for(Data<?> item: svids.getValue()) {
 				
 				L sl = new L();
-				Long ival = item.getValue(0);
+				Long ival = ((U4)item).getValue(0);
 				String iname = StatusVariableList.get(ival);
 				sl.addItem(item);
 				if(iname == null) {
@@ -165,27 +166,35 @@ public class S1F12 extends SecsReplyMessage
 					sl.addItem(new A(iname));
 					sl.addItem(new A("1"));
 				}
-				l.addItem(sl);
+				vl.addItem(sl);
 			}
 		}
 		
-		return l;
+		return vl;
 	}
 	
-	public List<U4> getSvids() {
+	/**
+	 * SVID List
+	 * @return
+	 */
+	public L getSvids() {
 		return svids;
 	}
 
-	public void setSvids(List<U4> svids) {
-		this.svids = svids;
+	public void setSvids(L svidList) {
+		this.svids = svidList;
 	}
 
-	public Data<?> getVariables() {
+	/**
+	 * Variable List
+	 * @return
+	 */
+	public L getVariables() {
 		return variables;
 	}
 
-	public void setVariables(Data<?> variables) {
-		this.variables = variables;
+	public void setVariables(L variableList) {
+		this.variables = variableList;
 	}
 
 }

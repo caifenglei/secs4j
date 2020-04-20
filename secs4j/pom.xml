@@ -24,6 +24,7 @@
         <log4j.version>1.2.17</log4j.version>
         <commons-io.version>2.4</commons-io.version>
         <junit.version>4.8</junit.version>
+        <mysql-connector.version>5.1.6</mysql-connector.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector.version}</version>
+		</dependency>
     </dependencies>
 
     <build>

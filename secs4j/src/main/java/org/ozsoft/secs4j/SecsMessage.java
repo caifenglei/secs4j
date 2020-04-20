@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.ozsoft.secs4j.format.Data;
 import org.ozsoft.secs4j.format.U2;
 import org.ozsoft.secs4j.format.U4;
@@ -37,6 +38,8 @@ import org.ozsoft.secs4j.util.ConversionUtils;
 public abstract class SecsMessage extends Message {
 
     private static final int WITH_REPLY_MASK = 0x80;
+    
+    protected static final Logger LOG = Logger.getLogger(SecsEquipment.class);
 
     /**
      * Returns the stream.

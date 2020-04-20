@@ -32,6 +32,8 @@ import org.ozsoft.secs4j.format.L;
 import org.ozsoft.secs4j.format.U4;
 import org.ozsoft.secs4j.message.S1F11;
 import org.ozsoft.secs4j.message.S1F12;
+import org.ozsoft.secs4j.message.S1F3;
+import org.ozsoft.secs4j.message.S1F4;
 import org.ozsoft.secs4j.message.S99F1;
 import org.ozsoft.secs4j.message.S99F2;
 
@@ -106,8 +108,10 @@ public class SystemTest {
         
         //S1F11
         S1F11 s1f11 = new S1F11();
-        s1f11.setSVID(new U4(1001L));
-        s1f11.setSVID(new U4(1011L));
+        L sl = new L();
+        sl.addItem(new U4(1001L));
+        sl.addItem(new U4(1011L));
+        s1f11.setSvids(sl);
         SecsReplyMessage s1f12 = activeEntity.sendMessageAndWait(s1f11);
         Assert.assertEquals("Incorrect stream", 1, s1f12.getStream());
         Assert.assertEquals("Incorrect function", 12, s1f12.getFunction());
@@ -118,6 +122,23 @@ public class SystemTest {
         Assert.assertEquals("Incorrect SVID", 1011L, ((U4)((L) variables.getItem(1)).getItem(0)).getValue(0));
         Assert.assertEquals("Incorrect UNITS", "1", ((A)((L) variables.getItem(0)).getItem(2)).getValue());
         Assert.assertEquals("Incorrect UNITS", "0", ((A)((L) variables.getItem(1)).getItem(2)).getValue());
+        
+        //S1F3
+        S1F3 s1f3 = new S1F3();
+        L l_s1f3 = new L();
+        l_s1f3.addItem(new U4(1001L));
+        l_s1f3.addItem(new U4(1011L));
+        s1f3.setSvids(l_s1f3);
+        SecsReplyMessage s1f4 = activeEntity.sendMessageAndWait(s1f3);
+        Assert.assertEquals("Incorrect stream", 1, s1f4.getStream());
+        Assert.assertEquals("Incorrect function", 4, s1f4.getFunction());
+        Assert.assertTrue("Reply message not S1F4", s1f4 instanceof S1F4);
+//        L variables = (L) ((S1F12)s1f12).getVariables();
+//        Assert.assertEquals("Incorrect SVID", 1001L, ((U4)((L) variables.getItem(0)).getItem(0)).getValue(0));
+//        Assert.assertEquals("Incorrect SVNAME", "EquipmentOperationStatus", ((A)((L) variables.getItem(0)).getItem(1)).getValue());
+//        Assert.assertEquals("Incorrect SVID", 1011L, ((U4)((L) variables.getItem(1)).getItem(0)).getValue(0));
+//        Assert.assertEquals("Incorrect UNITS", "1", ((A)((L) variables.getItem(0)).getItem(2)).getValue());
+//        Assert.assertEquals("Incorrect UNITS", "0", ((A)((L) variables.getItem(1)).getItem(2)).getValue());
         
 
         // Disable active entity.

@@ -1,8 +1,5 @@
 package org.ozsoft.secs4j.message;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.ozsoft.secs4j.SecsException;
 import org.ozsoft.secs4j.SecsParseException;
 import org.ozsoft.secs4j.SecsPrimaryMessage;
@@ -27,7 +24,7 @@ public class S1F11 extends SecsPrimaryMessage
 	
 	private static final String DESCRIPTION = "Status Variable Namelist Request";
 	
-	private List<U4> svids = new ArrayList<U4>();
+	private L svids = new L();
 
 	@Override
 	/**
@@ -91,9 +88,8 @@ public class S1F11 extends SecsPrimaryMessage
         		if(!(dataItem instanceof U4)) {
         			throw new SecsParseException("SVID must be of type U4");
         		}
-       
-        		setSVID((U4) dataItem);
             }
+        	setSvids(l);
         }
 	}
 
@@ -108,17 +104,12 @@ public class S1F11 extends SecsPrimaryMessage
 	 */
 	protected Data<?> getData() throws SecsParseException {
 
-		L l = new L();
-		for (int i = 0; i < svids.size(); i++) {
-			l.addItem(svids.get(i));
-		}
-	
-		return l;
+		return svids;
 	}
 	
-	public void setSVID(U4 svid)
+	public void setSvids(L svidList)
 	{
-		this.svids.add(svid);
+		this.svids = svidList;
 	}
 
 }
