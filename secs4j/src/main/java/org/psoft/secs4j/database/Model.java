@@ -10,16 +10,17 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.ozsoft.secs4j.SecsEquipment;
+import org.ozsoft.secs4j.util.ApplicationProperties;
 
 public abstract class Model {
 
 	private static final Logger LOG = Logger.getLogger(SecsEquipment.class);
+	
+	private final String URL = ApplicationProperties.getDBConnectionURL();
 
-	private final String URL = "jdbc:mysql://localhost:3306/parse_crm";
+	private final String USER = ApplicationProperties.getDBUser();
 
-	private final String USER = "root";
-
-	private final String PASS = "123123";
+	private final String PASS = ApplicationProperties.getDBPassword();
 
 	Connection conn = null;
 	PreparedStatement stmt = null;

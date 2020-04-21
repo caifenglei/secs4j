@@ -21,14 +21,26 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.6</java.version>
+        <spring-framework.version>4.1.5.RELEASE</spring-framework.version>
         <log4j.version>1.2.17</log4j.version>
         <commons-io.version>2.4</commons-io.version>
         <junit.version>4.8</junit.version>
         <mysql-connector.version>5.1.6</mysql-connector.version>
+        <resource.directory>src/main/resources</resource.directory>
     </properties>
 
     <dependencies>
-        <dependency>
+<!-- 	    <dependency>
+	    	<groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-framework.version}</version>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.annotation</groupId>
+		    <artifactId>javax.annotation-api</artifactId>
+		    <version>1.3.2</version>
+		</dependency>-->
+		<dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
@@ -52,6 +64,34 @@
 			<version>${mysql-connector.version}</version>
 		</dependency>
     </dependencies>
+    
+    <profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
+			<properties>
+				<!-- Database Properties -->
+				<db.driverClass>com.mysql.jdbc.Driver</db.driverClass>
+				<db.connectionURL>jdbc:mysql://localhost:3306/parse_crm</db.connectionURL>
+				<db.username>root</db.username>
+				<db.password>123123</db.password>
+				<!-- Equipment Properties -->
+				<equ.deviceID>2</equ.deviceID>
+				<equ.deviceHost>localhost</equ.deviceHost>
+				<equ.devicePort>5555</equ.devicePort>
+				<equ.timoutT3>120</equ.timoutT3>
+				<equ.timoutT5>10</equ.timoutT5>
+				<equ.timoutT6>5</equ.timoutT6>
+				<equ.timoutT7>10</equ.timoutT7>
+			</properties>
+		</profile>
+	</profiles>
 
     <build>
         <plugins>
@@ -64,25 +104,6 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <!-- plugin>
-            	<groupId>org.springframework.boot</groupId>
-            	<artifactId>spring-boot-maven-plugin</artifactId>
-            	<executions>
-		            <execution>
-		                <phase>package</phase>
-		                <goals>
-	                        <goal>repackage</goal>
-		                </goals>
-		                    <configuration>
-		                        <transformers>
-		                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-		                                <mainClass>org.ozsoft.secs4j.gui.TestTool</mainClass>
-		                            </transformer>
-		                        </transformers>
-		                    </configuration>
-		            </execution>
-		        </executions>
-            </plugin> -->
             <plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-shade-plugin</artifactId>
@@ -104,6 +125,14 @@
 		        </executions>
 		     </plugin>
         </plugins>
+        
+        <resources>
+            <resource>
+                <directory>${resource.directory}</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        
     </build>
 
 </project>

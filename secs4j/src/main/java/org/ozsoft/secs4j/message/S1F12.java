@@ -3,6 +3,7 @@ package org.ozsoft.secs4j.message;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ozsoft.secs4j.GemConstants;
 import org.ozsoft.secs4j.SecsException;
 import org.ozsoft.secs4j.SecsParseException;
 import org.ozsoft.secs4j.SecsReplyMessage;
@@ -35,9 +36,9 @@ public class S1F12 extends SecsReplyMessage
 	
 	static {
 		StatusVariableList = new HashMap<Long, String>();
-		StatusVariableList.put(1001L, "EquipmentOperationStatus");
-		StatusVariableList.put(1002L, "EquipmentOperator");
-		StatusVariableList.put(1003L, "EquipmentDateTime");
+		StatusVariableList.put(1001L, GemConstants.VN_OPERATION_STATUS);
+		StatusVariableList.put(1002L, GemConstants.VN_OPERATOR);
+		StatusVariableList.put(1003L, GemConstants.VN_DATETIME);
 	}
 
 	@Override
