@@ -18,7 +18,9 @@
 package org.ozsoft.secs4j.message;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ozsoft.secs4j.SecsException;
 import org.ozsoft.secs4j.SecsParseException;
@@ -33,114 +35,138 @@ import org.psoft.secs4j.database.EquipmentVariable;
  * S1F4 Selected Equipment Status Data
  * 
  * sent by Host Only
- *  
+ * 
  * @author Caifenglei
  */
 public class S1F4 extends SecsReplyMessage {
 
-    private static final int STREAM = 1;
+	private static final int STREAM = 1;
 
-    private static final int FUNCTION = 4;
-    
-    private static final boolean WITH_REPLY = false;
-    
-    private static final String DESCRIPTION = "Selected Equipment Status Data";
-    
-    private L svids = new L();
-    
-    @Override
-    public int getStream() {
-        return STREAM;
-    }
+	private static final int FUNCTION = 4;
 
-    @Override
-    public int getFunction() {
-        return FUNCTION;
-    }
+	private static final boolean WITH_REPLY = false;
 
-    @Override
-    public boolean withReply() {
-        return WITH_REPLY;
-    }
+	private static final String DESCRIPTION = "Selected Equipment Status Data";
 
-    @Override
-    public String getDescripton() {
-        return DESCRIPTION;
-    }
+	private L svids = new L();
 
-    @Override
-    /**
-     * Format:
-	 * {L:n
-	 * 		SV <A>
-	 * }
-     */
-    protected void parseData(Data<?> data) throws SecsParseException {
-        if (data == null) {
-            throw new SecsParseException("Data missing for S1F4");
-        }
-        
-        if (!(data instanceof L)) {
-            throw new SecsParseException("Root data item must be of type L");
-        }
-        L l = (L) data;
-        if (l.length() == 0) {
-        	//no status data exist
-        } else {
-        	
-        	int len = l.length();
-        	for (int i = 0; i < len; i++) {
-        		
-        		Data<?> dataItem = l.getItem(i);
-        		if(!(dataItem instanceof A)) {
-        			throw new SecsParseException("SV must be of type A");
-        		}
-            }
-        	setSvids(l);
-        }
-    }
-    
-    @Override
+	private L svs = new L();
+
+	@Override
+	public int getStream() {
+		return STREAM;
+	}
+
+	@Override
+	public int getFunction() {
+		return FUNCTION;
+	}
+
+	@Override
+	public boolean withReply() {
+		return WITH_REPLY;
+	}
+
+	@Override
+	public String getDescripton() {
+		return DESCRIPTION;
+	}
+
+	@Override
 	/**
-	 * form request data to send at the HOST side
+	 * Format: {L:n SV <A> }
+	 */
+	protected void parseData(Data<?> data) throws SecsParseException {
+		if (data == null) {
+			throw new SecsParseException("Data missing for S1F4");
+		}
+
+		if (!(data instanceof L)) {
+			throw new SecsParseException("Root data item must be of type L");
+		}
+		L l = (L) data;
+		if (l.length() == 0) {
+			// no status data exist
+		} else {
+
+			int len = l.length();
+			for (int i = 0; i < len; i++) {
+
+				Data<?> dataItem = l.getItem(i);
+				if (!(dataItem instanceof A)) {
+					throw new SecsParseException("SV must be of type A");
+				}
+			}
+		}
+		setSvs(l);
+	}
+
+	@Override
+	/**
+	 * get data to send reply
 	 * 
-	 * Format:
-	 * {L:n
-	 * 		SV <A>
-	 * }
+	 * Format: {L:n SV <A> }
 	 */
 	protected Data<?> getData() throws SecsParseException {
 
-    	ArrayList<Long> params = new ArrayList<Long>();
-    	for(Data<?> svid: svids.getValue()) {
-    		params.add(((U4) svid).getValue(0));
-    	}
-    	List<?> records =  EquipmentVariable.getNewestRecords(params);
-    	
-    	LOG.info("queried records: " + records.size());
-    	L svs = new L();
-    	for(int i = 0; i < records.size(); i++) {
-    		
-    		EquipmentVariable ev = (EquipmentVariable) records.get(i);
-    		String vv = ev.getVariableValue();
-    		svs.addItem(new A(vv));
-    	}
-    	
+		//if format received data from parseData
+		if (svs.length() > 0) {
+			return svs;
+		}
+		
+		// get (Long)ID List
+		ArrayList<Long> params = new ArrayList<Long>();
+		for (Data<?> svid : svids.getValue()) {
+			params.add(((U4) svid).getValue(0));
+		}
+		List<?> records = EquipmentVariable.getNewestRecords(params);
+
+		LOG.info("queried records: " + records.size());
+
+		// map id => value
+		Map<Long, String> refer = new HashMap<Long, String>();
+		for (int i = 0; i < records.size(); i++) {
+
+			EquipmentVariable ev = (EquipmentVariable) records.get(i);
+			Long id = ev.getVariableID();
+			String vv = ev.getVariableValue();
+			refer.put(id, vv);
+		}
+
+		// fill L by SVID list
+		L svs = new L();
+		for (int j = 0; j < params.size(); j++) {
+
+			String val = refer.get(params.get(j));
+			if (val == null) {
+				svs.addItem(new A(""));
+			} else {
+				svs.addItem(new A(val));
+			}
+		}
+
 		return svs;
 	}
-	
-	public void setSvids(L svidList)
-	{
+
+	public void setSvids(L svidList) {
 		this.svids = svidList;
 	}
 
-    @Override
-    protected void handle()  throws SecsException{
-        
-    }
+	@Override
+	protected void handle() throws SecsException {
+
+	}
 
 	public L getSvids() {
 		return svids;
+	}
+
+	public L getSvs() {
+		return svs;
+	}
+
+	public void setSvs(L svs) {
+		this.svs = svs;
 	}
 
 }

@@ -37,7 +37,10 @@ public class EquipmentVariable extends Model {
 		int paramCount = params.size();
 		for(int i = 0; i < paramCount; i++) {
 			
-			sqlBuilder.append("?,");
+			sqlBuilder.append("?");
+			if(paramCount - 1 != i) {
+				sqlBuilder.append(",");
+			}
 		}
 		sqlBuilder.append(")  GROUP BY variable_id) ORDER BY FIELD(variable_id");
 		for(int i = 0; i < paramCount; i++) {

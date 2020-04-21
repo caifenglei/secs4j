@@ -133,12 +133,9 @@ public class SystemTest {
         Assert.assertEquals("Incorrect stream", 1, s1f4.getStream());
         Assert.assertEquals("Incorrect function", 4, s1f4.getFunction());
         Assert.assertTrue("Reply message not S1F4", s1f4 instanceof S1F4);
-//        L variables = (L) ((S1F12)s1f12).getVariables();
-//        Assert.assertEquals("Incorrect SVID", 1001L, ((U4)((L) variables.getItem(0)).getItem(0)).getValue(0));
-//        Assert.assertEquals("Incorrect SVNAME", "EquipmentOperationStatus", ((A)((L) variables.getItem(0)).getItem(1)).getValue());
-//        Assert.assertEquals("Incorrect SVID", 1011L, ((U4)((L) variables.getItem(1)).getItem(0)).getValue(0));
-//        Assert.assertEquals("Incorrect UNITS", "1", ((A)((L) variables.getItem(0)).getItem(2)).getValue());
-//        Assert.assertEquals("Incorrect UNITS", "0", ((A)((L) variables.getItem(1)).getItem(2)).getValue());
+        L svs = ((S1F4) s1f4).getSvs();
+        Assert.assertEquals("Incorrect EquipmentOperationStatus variable", "production", svs.getItem(0).getValue());
+        Assert.assertEquals("Incorrect 1011L(Undefined) variable", "", svs.getItem(1).getValue());
         
 
         // Disable active entity.
