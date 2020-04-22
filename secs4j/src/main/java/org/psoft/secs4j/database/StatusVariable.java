@@ -5,23 +5,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EquipmentVariable extends Model {
+public class StatusVariable extends Model {
 
-	private static final String TABLE = "equipment_variables";
+	private static final String TABLE = "secs_status_variables";
 
-	private Long variableID;
+	private Long SVID;
 
-	private String variableName = null;
-
-	private String variableValue = null;
+	private String SV = null;
 	
-	public EquipmentVariable() {
+	public StatusVariable() {
 		
 	}
 
-	public EquipmentVariable(Long ID, String Name, String Value) {
+	public StatusVariable(Long ID, String Value) {
 		this.setVariableID(ID);
-		this.setVariableName(Name);
 		this.setVariableValue(Value);
 	}
 	
@@ -33,7 +30,7 @@ public class EquipmentVariable extends Model {
 	public static List<?> getNewestRecords(ArrayList<Long> params)
 	{
 		StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM " + TABLE + " WHERE id IN ( ");
-		sqlBuilder.append("SELECT MAX(id) FROM " + TABLE + " WHERE variable_id IN (");
+		sqlBuilder.append("SELECT MAX(id) FROM " + TABLE + " WHERE SVID IN (");
 		int paramCount = params.size();
 		for(int i = 0; i < paramCount; i++) {
 			
@@ -42,14 +39,14 @@ public class EquipmentVariable extends Model {
 				sqlBuilder.append(",");
 			}
 		}
-		sqlBuilder.append(")  GROUP BY variable_id) ORDER BY FIELD(variable_id");
+		sqlBuilder.append(")  GROUP BY SVID) ORDER BY FIELD(SVID");
 		for(int i = 0; i < paramCount; i++) {
 			
 			sqlBuilder.append(",").append(params.get(i));
 		}
 		sqlBuilder.append(")");
 		
-		EquipmentVariable ev = new EquipmentVariable();
+		StatusVariable ev = new StatusVariable();
 		
 		return ev.getDataFromDB(sqlBuilder.toString(), params);
 	}
@@ -70,21 +67,20 @@ public class EquipmentVariable extends Model {
 			sqlBuilder.append("?,");
 		}
 		sqlBuilder.append(")  AND b.variable_id = a.variable_id) = 1");
-		EquipmentVariable ev = new EquipmentVariable();
+		StatusVariable ev = new StatusVariable();
 		
 		return ev.getDataFromDB(sqlBuilder.toString(), params);
 	}
 	
-	protected List<EquipmentVariable> formatRecords(ResultSet rs)
+	protected List<StatusVariable> formatRecords(ResultSet rs)
 	{
-		List<EquipmentVariable> records = new ArrayList<EquipmentVariable>();
+		List<StatusVariable> records = new ArrayList<StatusVariable>();
 		try {
 			while (rs.next()) {
 
-				Long id = rs.getLong("variable_id");
-				String name = rs.getString("variable_name");
-				String value = rs.getString("variable_value");
-				records.add(new EquipmentVariable(id, name,value));
+				Long id = rs.getLong("SVID");
+				String value = rs.getString("SV");
+				records.add(new StatusVariable(id, value));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -95,27 +91,19 @@ public class EquipmentVariable extends Model {
 	}
 
 	public Long getVariableID() {
-		return variableID;
+		return SVID;
 	}
 
 	public void setVariableID(Long variableID) {
-		this.variableID = variableID;
-	}
-
-	public String getVariableName() {
-		return variableName;
-	}
-
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
+		this.SVID = variableID;
 	}
 
 	public String getVariableValue() {
-		return variableValue;
+		return SV;
 	}
 
 	public void setVariableValue(String variableValue) {
-		this.variableValue = variableValue;
+		this.SV = variableValue;
 	}
 
 }

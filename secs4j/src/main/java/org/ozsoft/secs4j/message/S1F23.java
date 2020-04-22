@@ -55,6 +55,12 @@ public class S1F23 extends SecsPrimaryMessage
 	}
 
 	@Override
+	/**
+	 * Format:
+	 * {L:n
+	 * 		CEID <U4>
+	 * }
+	 */
 	protected void parseData(Data<?> data) throws SecsParseException {
 		
 		if (data == null) {

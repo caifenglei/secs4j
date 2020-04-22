@@ -20,13 +20,6 @@ package org.ozsoft.secs4j;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.ozsoft.secs4j.CommunicationState;
-import org.ozsoft.secs4j.ConnectMode;
-import org.ozsoft.secs4j.ConnectionState;
-import org.ozsoft.secs4j.ControlState;
-import org.ozsoft.secs4j.SecsEquipment;
-import org.ozsoft.secs4j.SecsException;
-import org.ozsoft.secs4j.SecsReplyMessage;
 import org.ozsoft.secs4j.format.A;
 import org.ozsoft.secs4j.format.L;
 import org.ozsoft.secs4j.format.U4;

@@ -29,7 +29,7 @@ import org.ozsoft.secs4j.format.A;
 import org.ozsoft.secs4j.format.Data;
 import org.ozsoft.secs4j.format.L;
 import org.ozsoft.secs4j.format.U4;
-import org.psoft.secs4j.database.EquipmentVariable;
+import org.psoft.secs4j.database.StatusVariable;
 
 /**
  * S1F4 Selected Equipment Status Data
@@ -119,7 +119,7 @@ public class S1F4 extends SecsReplyMessage {
 		for (Data<?> svid : svids.getValue()) {
 			params.add(((U4) svid).getValue(0));
 		}
-		List<?> records = EquipmentVariable.getNewestRecords(params);
+		List<?> records = StatusVariable.getNewestRecords(params);
 
 		LOG.info("queried records: " + records.size());
 
@@ -127,7 +127,7 @@ public class S1F4 extends SecsReplyMessage {
 		Map<Long, String> refer = new HashMap<Long, String>();
 		for (int i = 0; i < records.size(); i++) {
 
-			EquipmentVariable ev = (EquipmentVariable) records.get(i);
+			StatusVariable ev = (StatusVariable) records.get(i);
 			Long id = ev.getVariableID();
 			String vv = ev.getVariableValue();
 			refer.put(id, vv);

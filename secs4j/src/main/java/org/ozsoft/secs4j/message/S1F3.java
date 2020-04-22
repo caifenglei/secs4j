@@ -107,7 +107,6 @@ public class S1F3 extends SecsPrimaryMessage {
 	 */
 	protected Data<?> getData() throws SecsParseException {
 
-    	LOG.info("S1F3 get data length: " + svids.length());
 		return svids;
 	}
 

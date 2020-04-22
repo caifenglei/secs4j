@@ -26,9 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -52,8 +50,6 @@ import org.ozsoft.secs4j.SecsConstants;
 import org.ozsoft.secs4j.SecsEquipment;
 import org.ozsoft.secs4j.SecsEquipmentListener;
 import org.ozsoft.secs4j.SecsException;
-import org.ozsoft.secs4j.format.L;
-import org.ozsoft.secs4j.format.U4;
 import org.ozsoft.secs4j.message.S1F1;
 import org.ozsoft.secs4j.message.S1F11;
 
@@ -119,7 +115,7 @@ public class TestTool implements SecsEquipmentListener {
 
         equipment.addListener(this);
         
-        launchPassiveEqu();
+//        launchPassiveEqu();
     }
     
     @Override
@@ -142,25 +138,25 @@ public class TestTool implements SecsEquipmentListener {
 
     @Override
     public void messageReceived(Message message) {
-        appendTraceLog("R>> " + message.toString());
+        appendTraceLog("Received <<< " + message.toString());
     }
 
     @Override
     public void messageSent(Message message) {
-        appendTraceLog("S<< " + message.toString());
+        appendTraceLog("Send >>> " + message.toString());
     }
     
-    private void launchPassiveEqu() {
-    	
-    	SecsEquipment passiveEqu = new SecsEquipment();
-    	passiveEqu.setConnectMode(ConnectMode.PASSIVE);
-    	try {
-    		//default port
-			passiveEqu.setEnabled(true);
-		} catch (SecsException e) {
-			JOptionPane.showMessageDialog(frame, "Could not configure or enable passive equipment: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		}
-    }
+//    private void launchPassiveEqu() {
+//    	
+//    	SecsEquipment passiveEqu = new SecsEquipment();
+//    	passiveEqu.setConnectMode(ConnectMode.PASSIVE);
+//    	try {
+//    		//default port
+//			passiveEqu.setEnabled(true);
+//		} catch (SecsException e) {
+//			JOptionPane.showMessageDialog(frame, "Could not configure or enable passive equipment: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//		}
+//    }
     
     private void initUI() {
         frame = new JFrame(TITLE);
@@ -281,7 +277,7 @@ public class TestTool implements SecsEquipmentListener {
         
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -314,7 +310,7 @@ public class TestTool implements SecsEquipmentListener {
         
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -403,7 +399,7 @@ public class TestTool implements SecsEquipmentListener {
         
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -445,7 +441,7 @@ public class TestTool implements SecsEquipmentListener {
 	            	}else if (S1F11.class.getSimpleName().equals(message)) {
 						
 	            		S1F11 s1f11 = new S1F11();
-	                    equipment.sendMessageAndWait(s1f11);
+	                    equipment.sendMessage(s1f11);
 						
 	            	}else {
 	            		
@@ -488,7 +484,7 @@ public class TestTool implements SecsEquipmentListener {
         scrollPane = new JScrollPane(traceText);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
@@ -506,7 +502,7 @@ public class TestTool implements SecsEquipmentListener {
         });
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.NONE;
@@ -517,7 +513,7 @@ public class TestTool implements SecsEquipmentListener {
         
         gbc.gridx = 1;
         gbc.gridy = 3;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;

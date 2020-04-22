@@ -524,6 +524,11 @@ public class SecsEquipment {
                     try {
                         Message requestMessage = MessageParser.parseMessage(buf, length, messageTypes);
                         LOG.trace(String.format("Received message: %s", requestMessage));
+                        
+                        for (SecsEquipmentListener listener : listeners) {
+                            listener.messageReceived(requestMessage);
+                        }
+                        
                         Message replyMessage = handleMessage(requestMessage);
                         if (replyMessage != null) {
                             sendMessage(replyMessage, false);

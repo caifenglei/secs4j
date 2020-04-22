@@ -35,6 +35,7 @@ public class S1F24 extends SecsReplyMessage {
 	static {
 //		EventCollection = new HashMap<Long, HashMap<String, ArrayList<Long>>>();
 		EventCollection = new HashMap<Long, HashMap<String, ArrayList<Long>>>();
+		//TODO Load from events.json
 		
 //		EventCollection.put(3001L, "EquipmentOperationStatus");
 //		StatusVariableList.put(1002L, "EquipmentOperator");
@@ -67,6 +68,18 @@ public class S1F24 extends SecsReplyMessage {
 	}
 
 	@Override
+	/**
+	 * Format:
+	 * {L:n
+	 * 		{L:3
+	 * 			CEID<U4>
+	 * 			CENAME<A>
+	 * 			{L:a
+	 * 				VID<U4>
+	 * 			}
+	 * 		}
+	 * }
+	 */
 	protected void parseData(Data<?> data) throws SecsParseException {
 		// TODO Auto-generated method stub
 
