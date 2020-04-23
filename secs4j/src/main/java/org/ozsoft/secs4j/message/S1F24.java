@@ -35,7 +35,7 @@ public class S1F24 extends SecsReplyMessage {
 	static {
 //		EventCollection = new HashMap<Long, HashMap<String, ArrayList<Long>>>();
 		EventCollection = new HashMap<Long, HashMap<String, ArrayList<Long>>>();
-		//TODO Load from events.json
+		//TODO Load from definitions/events.json
 		
 //		EventCollection.put(3001L, "EquipmentOperationStatus");
 //		StatusVariableList.put(1002L, "EquipmentOperator");

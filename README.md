@@ -17,6 +17,11 @@ Basic SECS/GEM communication has been implemented, but far more work is required
 comply with the minimal set of implementation requirements set by the related SEMI standards.
 
 --- THIS PROJECT IS CURRENTLY INACTIVE ---
+理解了SECS-II/GEM的实现逻辑，已完成了通讯的构建以及协议的数据结构开发，开始着手SxFy的消息开发，在进入具体的SVID，CEID和VID开发时，戛然而止，善待解决的问题有：
+1.整理各类ID的内容
+2.软件与设备间的消息通讯，已建立了MySQL数据，但是没有处理设备主动上报的消息，软件如何接收
+3.软件应用的经验缺失，没有投资建立的机会
+一些研究分析记录到手稿了，相关资料存档电脑中
 
 ## Development
 
